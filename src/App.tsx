@@ -1,31 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import WordCard from "./components/WordCard";
-import TestPage from "./pages/TestPage"; // 3단계에서 만든 테스트 페이지 import
+import TestPage from "./pages/TestPage";
 import type { Word } from "./types/word";
-import vocabularyData from "./data/vocabulary.json";
-
-const vocabulary: { [key: string]: Word[] } = vocabularyData;
+import { supabase } from "./lib/supabaseClient";
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
 };
 
-// 홈 화면 컴포넌트를 분리
 const HomePage = () => {
-  const navigate = useNavigate(); // 페이지 이동을 위한 훅
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date("2025-06-09"));
-  const currentWords = vocabulary[formatDate(currentDate)] || [];
+  const [words, setWords] = useState<Word[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handlePrevDay = () =>
-    setCurrentDate((d) => new Date(d.setDate(d.getDate() - 1)));
-  const handleNextDay = () =>
-    setCurrentDate((d) => new Date(d.setDate(d.getDate() + 1)));
+  useEffect(() => {
+    const fetchWords = async () => {
+      setLoading(true);
+      const formattedDate = formatDate(currentDate);
+
+      const { data, error } = await supabase
+        .from("words")
+        .select("*")
+        .eq("date", formattedDate);
+
+      if (error) {
+        console.error("Error fetching words:", error);
+      } else {
+        setWords(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchWords();
+  }, [currentDate]);
+
+  const handlePrevDay = () => {
+    setCurrentDate((current) => {
+      const newDate = new Date(current);
+      newDate.setDate(newDate.getDate() - 1);
+      return newDate;
+    });
+  };
+
+  const handleNextDay = () => {
+    setCurrentDate((current) => {
+      const newDate = new Date(current);
+      newDate.setDate(newDate.getDate() + 1);
+      return newDate;
+    });
+  };
 
   const startTest = () => {
-    // 테스트 페이지로 이동하면서 그날의 단어 데이터를 state로 전달
-    navigate("/test", { state: { words: currentWords } });
+    navigate("/test", { state: { words: words } });
   };
 
   return (
@@ -39,8 +68,7 @@ const HomePage = () => {
           </span>
           <button onClick={handleNextDay}>다음 날짜 &gt;</button>
         </div>
-        {/* ↓↓↓ 2. 테스트 시작 버튼 추가 */}
-        {currentWords.length > 0 && (
+        {words.length > 0 && (
           <button
             onClick={startTest}
             style={{
@@ -55,8 +83,10 @@ const HomePage = () => {
         )}
       </header>
       <main>
-        {currentWords.length > 0 ? (
-          currentWords.map((word) => <WordCard key={word.id} wordData={word} />)
+        {loading ? (
+          <p style={{ textAlign: "center" }}>단어를 불러오는 중...</p>
+        ) : words.length > 0 ? (
+          words.map((word) => <WordCard key={word.id} wordData={word} />)
         ) : (
           <p style={{ textAlign: "center" }}>
             해당 날짜의 단어 데이터가 없습니다.
@@ -70,7 +100,6 @@ const HomePage = () => {
 function App() {
   return (
     <div style={{ width: "100%", maxWidth: "600px" }}>
-      {/* ↓↓↓ 3. 경로에 따라 다른 페이지를 보여주도록 설정 */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/test" element={<TestPage />} />
