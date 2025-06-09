@@ -25,7 +25,7 @@ const formatDate = (date: Date): string => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [currentDate, setCurrentDate] = useState(new Date("2025-06-09"));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
