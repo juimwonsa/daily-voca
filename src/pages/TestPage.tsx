@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Stack } from "@mui/material";
 import type { Word } from "../types/word";

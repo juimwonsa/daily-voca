@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 // MUI 컴포넌트 import
@@ -17,6 +17,7 @@ import TestSelectionModal from "./components/TestSelectionModal";
 import TestPage from "./pages/TestPage";
 import type { Word } from "./types/word";
 import { supabase } from "./lib/supabaseClient";
+import WritingTestPage from "./pages/WritingTestPage";
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
@@ -57,12 +58,13 @@ const HomePage = () => {
       return d;
     });
 
-  const handleStartTest = (testType: "multiple-choice" | "spelling") => {
+  const handleStartTest = (testType: "multiple-choice" | "writing") => {
     setIsModalOpen(false);
+    console.log(testType);
     if (testType === "multiple-choice") {
       navigate("/test", { state: { words: words } });
-    } else if (testType === "spelling") {
-      alert("주관식 테스트 기능은 준비 중입니다.");
+    } else if (testType === "writing") {
+      navigate("/test/writing", { state: { words: words } });
     }
   };
 
@@ -131,6 +133,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/test" element={<TestPage />} />
+          <Route path="/test/writing" element={<WritingTestPage />} />
         </Routes>
       </Container>
     </>

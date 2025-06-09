@@ -3,16 +3,18 @@ import {
   Modal,
   Box,
   Typography,
-  Button,
-  Stack,
   IconButton,
+  Stack,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import CreateIcon from "@mui/icons-material/Create";
 
 interface TestSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onStartTest: (testType: "multiple-choice" | "spelling") => void;
+  onStartTest: (testType: "multiple-choice" | "writing") => void;
 }
 
 const style = {
@@ -23,9 +25,10 @@ const style = {
   width: "90%",
   maxWidth: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  border: "none",
   boxShadow: 24,
   p: 4,
+  borderRadius: 2,
 };
 
 const TestSelectionModal: React.FC<TestSelectionModalProps> = ({
@@ -42,23 +45,61 @@ const TestSelectionModal: React.FC<TestSelectionModalProps> = ({
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+        <Typography
+          variant="h6"
+          component="h2"
+          sx={{ mb: 3, textAlign: "center" }}
+        >
           테스트 유형 선택
         </Typography>
-        <Stack spacing={2}>
+        <Stack direction="row" spacing={2} justifyContent="space-around">
           <Button
-            variant="contained"
             onClick={() => onStartTest("multiple-choice")}
-            size="large"
+            sx={{
+              bgcolor: "white",
+              color: "primary.main",
+              width: 120,
+              height: 120,
+              borderRadius: 2,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "2px solid", // --- 테두리 두께 및 스타일 추가
+              borderColor: "primary.main", // --- 테두리 색상 추가
+              "&:hover": {
+                bgcolor: "grey.100",
+              },
+            }}
           >
-            단어 뜻 맞히기 (객관식)
+            <AssignmentIcon sx={{ fontSize: 40, mb: 1 }} />
+            <Typography variant="body2" align="center">
+              단어 뜻 맞히기
+            </Typography>
           </Button>
           <Button
-            variant="contained"
-            onClick={() => onStartTest("spelling")}
-            size="large"
+            onClick={() => onStartTest("writing")} // 타입을 'writing'으로 변경
+            sx={{
+              bgcolor: "white",
+              color: "secondary.main",
+              width: 120,
+              height: 120,
+              borderRadius: 2,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              border: "2px solid",
+              borderColor: "secondary.main",
+              "&:hover": {
+                bgcolor: "grey.100",
+              },
+            }}
           >
-            단어 철자 맞히기 (주관식)
+            <CreateIcon sx={{ fontSize: 40, mb: 1 }} /> {/* 아이콘 변경 */}
+            <Typography variant="body2" align="center">
+              문장 만들기 (작문) {/* 텍스트 변경 */}
+            </Typography>
           </Button>
         </Stack>
       </Box>
