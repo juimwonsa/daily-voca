@@ -1,0 +1,72 @@
+{
+  "2025-06-09": [
+    {
+      "id": 1,
+      "word": "ubiquitous",
+      "meaning": "어디에나 있는, 아주 흔한",
+      "sentence": "Nowadays, smartphones are ubiquitous and have fundamentally changed how we communicate."
+    },
+    {
+      "id": 2,
+      "word": "alleviate",
+      "meaning": "완화하다, 경감시키다",
+      "sentence": "The government has introduced new policies to alleviate poverty in urban areas."
+    },
+    {
+      "id": 3,
+      "word": "subsequently",
+      "meaning": "그 후에, 이어서",
+      "sentence": "He graduated from university and subsequently found a job in a multinational company."
+    },
+    {
+      "id": 4,
+      "word": "proliferation",
+      "meaning": "급증, 확산",
+      "sentence": "The proliferation of fast-food restaurants has been linked to a rise in obesity."
+    },
+    {
+      "id": 5,
+      "word": "feasible",
+      "meaning": "실행 가능한",
+      "sentence": "It is not feasible to complete the project within the given timeframe without additional resources."
+    },
+    {
+      "id": 6,
+      "word": "detrimental",
+      "meaning": "해로운, 이롭지 않은",
+      "sentence": "Smoking has a detrimental effect on your health."
+    },
+    {
+      "id": 7,
+      "word": "inevitable",
+      "meaning": "불가피한, 피할 수 없는",
+      "sentence": "With the advancement of technology, changes in the job market are inevitable."
+    },
+    {
+      "id": 8,
+      "word": "ambiguous",
+      "meaning": "모호한, 애매한",
+      "sentence": "The instructions were ambiguous, which led to some confusion among the staff."
+    },
+    {
+      "id": 9,
+      "word": "culminate",
+      "meaning": "정점에 달하다, ~으로 끝나다",
+      "sentence": "Months of hard work culminated in a successful product launch."
+    },
+    {
+      "id": 10,
+      "word": "elicit",
+      "meaning": "이끌어내다, 유도하다",
+      "sentence": "The survey was designed to elicit detailed feedback from customers."
+    }
+  ],
+  "2025-06-10": [
+    {
+      "id": 11,
+      "word": "predominantly",
+      "meaning": "주로, 대부분",
+      "sentence": "The audience was predominantly composed of young adults."
+    }
+  ]
+}
