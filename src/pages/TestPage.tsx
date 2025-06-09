@@ -1,8 +1,10 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Typography, Button, Stack } from "@mui/material";
 import type { Word } from "../types/word";
 
 // 배열을 랜덤하게 섞는 헬퍼 함수
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const shuffleArray = (array: any[]) => {
   return [...array].sort(() => Math.random() - 0.5);
 };
@@ -10,6 +12,7 @@ const shuffleArray = (array: any[]) => {
 const TestPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const words: Word[] = location.state?.words || [];
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -54,91 +57,76 @@ const TestPage = () => {
     setCurrentQuestionIndex((prev) => prev + 1);
   };
 
-  // 테스트 종료 시 결과 화면
   if (currentQuestionIndex >= words.length) {
     return (
-      <div style={{ textAlign: "center" }}>
-        <h2>테스트 완료!</h2>
-        <p style={{ fontSize: "1.5rem" }}>
+      <Box sx={{ textAlign: "center", py: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          테스트 완료!
+        </Typography>
+        <Typography variant="h6">
           총 {words.length}문제 중 <strong>{score}</strong>개를 맞혔습니다.
-        </p>
-        <button onClick={() => navigate("/")}>홈으로 돌아가기</button>
-      </div>
-    );
-  }
-
-  // 단어 데이터가 없을 경우
-  if (words.length === 0) {
-    return (
-      <div>
-        테스트할 단어가 없습니다. 홈으로 돌아가 날짜를 선택해주세요.
-        <button onClick={() => navigate("/")}>홈으로 돌아가기</button>
-      </div>
+        </Typography>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/")}
+          sx={{ mt: 4 }}
+        >
+          홈으로 돌아가기
+        </Button>
+      </Box>
     );
   }
 
   return (
-    <div>
-      <h2 style={{ textAlign: "center" }}>
+    <Box sx={{ py: 2 }}>
+      <Typography variant="h5" component="h2" align="center">
         영단어 테스트 ({currentQuestionIndex + 1}/{words.length})
-      </h2>
-      <div
-        style={{
-          fontSize: "2rem",
-          fontWeight: "bold",
-          textAlign: "center",
-          margin: "20px 0",
-        }}
+      </Typography>
+      <Typography
+        variant="h3"
+        component="p"
+        align="center"
+        fontWeight="bold"
+        sx={{ my: 4 }}
       >
         {currentQuestion.word}
-      </div>
-      <div>
+      </Typography>
+      <Stack spacing={2}>
         {options.map((option, index) => {
-          // 답변 후 정답/오답 시각적 피드백
           const isCorrect = option === correctAnswer;
-          let buttonStyle = {};
+          let buttonColor: "inherit" | "success" | "error" = "inherit";
           if (isAnswered) {
-            if (isCorrect) {
-              buttonStyle = { backgroundColor: "lightgreen" };
-            } else if (option === selectedAnswer) {
-              buttonStyle = { backgroundColor: "lightcoral" };
-            }
+            if (isCorrect) buttonColor = "success";
+            else if (option === selectedAnswer) buttonColor = "error";
           }
-
           return (
-            <button
+            <Button
               key={index}
+              variant="contained"
               onClick={() => handleAnswerSelect(option)}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "15px",
-                margin: "10px 0",
-                fontSize: "1rem",
-                cursor: "pointer",
-                ...buttonStyle,
-              }}
               disabled={isAnswered}
+              color={buttonColor}
+              sx={{
+                padding: "15px",
+                fontSize: "1rem",
+                justifyContent: "center",
+              }}
             >
               {option}
-            </button>
+            </Button>
           );
         })}
-      </div>
+      </Stack>
       {isAnswered && (
-        <button
+        <Button
+          variant="outlined"
           onClick={handleNextQuestion}
-          style={{
-            width: "100%",
-            padding: "15px",
-            marginTop: "20px",
-            fontSize: "1.2rem",
-          }}
+          sx={{ width: "100%", mt: 4, py: 2, fontSize: "1.2rem" }}
         >
           다음 문제
-        </button>
+        </Button>
       )}
-    </div>
+    </Box>
   );
 };
 

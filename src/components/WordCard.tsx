@@ -1,5 +1,6 @@
-// src/components/WordCard.tsx
 import React from "react";
+import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp"; // 아이콘 import
 import type { Word } from "../types/word";
 
 interface WordCardProps {
@@ -7,61 +8,37 @@ interface WordCardProps {
 }
 
 const WordCard: React.FC<WordCardProps> = ({ wordData }) => {
-  // 어떤 텍스트든 읽어줄 수 있는 재사용 가능한 함수로 변경
   const speakText = (text: string) => {
-    // 혹시 이전에 재생 중인 소리가 있다면 중지
     window.speechSynthesis.cancel();
-
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US"; // 영어 발음으로 설정
+    utterance.lang = "en-US";
     window.speechSynthesis.speak(utterance);
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "16px",
-        margin: "8px 0",
-        borderRadius: "8px",
-      }}
-    >
-      <h3>
-        {wordData.word}
-        {/* 단어 읽기 버튼 */}
-        <button
-          onClick={() => speakText(wordData.word)}
-          style={{
-            marginLeft: "8px",
-            border: "none",
-            background: "none",
-            cursor: "pointer",
-            fontSize: "1.2rem",
-          }}
-        >
-          🔊
-        </button>
-      </h3>
-      <p>
-        <strong>뜻:</strong> {wordData.meaning}
-      </p>
-      <p>
-        <strong>예문:</strong> <em>{wordData.sentence}</em>
-        {/* ↓↓↓ 예문 읽기 버튼 추가! ↓↓↓ */}
-        <button
-          onClick={() => speakText(wordData.sentence)}
-          style={{
-            marginLeft: "8px",
-            border: "none",
-            background: "none",
-            cursor: "pointer",
-            fontSize: "1.2rem",
-          }}
-        >
-          🔊
-        </button>
-      </p>
-    </div>
+    <Card variant="outlined">
+      <CardContent>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+          <Typography variant="h5" component="h3" sx={{ flexGrow: 1 }}>
+            {wordData.word}
+          </Typography>
+          <IconButton onClick={() => speakText(wordData.word)} color="primary">
+            <VolumeUpIcon />
+          </IconButton>
+        </Box>
+        <Typography color="text.secondary" sx={{ mb: 1.5 }}>
+          <strong>뜻:</strong> {wordData.meaning}
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="body2" sx={{ flexGrow: 1 }}>
+            <strong>예문:</strong> <em>{wordData.sentence}</em>
+          </Typography>
+          <IconButton onClick={() => speakText(wordData.sentence)} size="small">
+            <VolumeUpIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

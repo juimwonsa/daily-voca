@@ -1,7 +1,19 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
+// MUI 컴포넌트 import
+import {
+  Container,
+  Typography,
+  Button,
+  Box,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+
 import WordCard from "./components/WordCard";
+import TestSelectionModal from "./components/TestSelectionModal";
 import TestPage from "./pages/TestPage";
 import type { Word } from "./types/word";
 import { supabase } from "./lib/supabaseClient";
@@ -15,96 +27,113 @@ const HomePage = () => {
   const [currentDate, setCurrentDate] = useState(new Date("2025-06-09"));
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchWords = async () => {
       setLoading(true);
       const formattedDate = formatDate(currentDate);
-
       const { data, error } = await supabase
         .from("words")
         .select("*")
         .eq("date", formattedDate);
-
-      if (error) {
-        console.error("Error fetching words:", error);
-      } else {
-        setWords(data || []);
-      }
+      if (error) console.error("Error fetching words:", error);
+      else setWords(data || []);
       setLoading(false);
     };
-
     fetchWords();
   }, [currentDate]);
 
-  const handlePrevDay = () => {
+  const handlePrevDay = () =>
     setCurrentDate((current) => {
-      const newDate = new Date(current);
-      newDate.setDate(newDate.getDate() - 1);
-      return newDate;
+      const d = new Date(current);
+      d.setDate(d.getDate() - 1);
+      return d;
     });
-  };
-
-  const handleNextDay = () => {
+  const handleNextDay = () =>
     setCurrentDate((current) => {
-      const newDate = new Date(current);
-      newDate.setDate(newDate.getDate() + 1);
-      return newDate;
+      const d = new Date(current);
+      d.setDate(d.getDate() + 1);
+      return d;
     });
-  };
 
-  const startTest = () => {
-    navigate("/test", { state: { words: words } });
+  const handleStartTest = (testType: "multiple-choice" | "spelling") => {
+    setIsModalOpen(false);
+    if (testType === "multiple-choice") {
+      navigate("/test", { state: { words: words } });
+    } else if (testType === "spelling") {
+      alert("주관식 테스트 기능은 준비 중입니다.");
+    }
   };
 
   return (
     <>
-      <header style={{ textAlign: "center", padding: "20px 0" }}>
-        <h1>오늘의 영단어</h1>
-        <div style={{ margin: "20px 0" }}>
-          <button onClick={handlePrevDay}>&lt; 이전 날짜</button>
-          <span style={{ margin: "0 16px", fontSize: "1.2em" }}>
-            {formatDate(currentDate)}
-          </span>
-          <button onClick={handleNextDay}>다음 날짜 &gt;</button>
-        </div>
+      <Box sx={{ textAlign: "center", paddingY: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          오늘의 영단어
+        </Typography>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+          sx={{ marginY: 2 }}
+        >
+          <Button variant="outlined" onClick={handlePrevDay}>
+            &lt; 이전 날짜
+          </Button>
+          <Typography variant="h6">{formatDate(currentDate)}</Typography>
+          <Button variant="outlined" onClick={handleNextDay}>
+            다음 날짜 &gt;
+          </Button>
+        </Stack>
         {words.length > 0 && (
-          <button
-            onClick={startTest}
-            style={{
-              marginTop: "10px",
-              padding: "10px 20px",
-              fontSize: "1rem",
-              cursor: "pointer",
-            }}
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => setIsModalOpen(true)}
           >
             오늘의 단어 테스트 시작
-          </button>
+          </Button>
         )}
-      </header>
+      </Box>
       <main>
         {loading ? (
-          <p style={{ textAlign: "center" }}>단어를 불러오는 중...</p>
+          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+            <CircularProgress />
+          </Box>
         ) : words.length > 0 ? (
-          words.map((word) => <WordCard key={word.id} wordData={word} />)
+          <Stack spacing={2}>
+            {words.map((word) => (
+              <WordCard key={word.id} wordData={word} />
+            ))}
+          </Stack>
         ) : (
-          <p style={{ textAlign: "center" }}>
+          <Typography sx={{ textAlign: "center", my: 4 }}>
             해당 날짜의 단어 데이터가 없습니다.
-          </p>
+          </Typography>
         )}
       </main>
+      <TestSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onStartTest={handleStartTest}
+      />
     </>
   );
 };
 
 function App() {
   return (
-    <div style={{ width: "100%", maxWidth: "600px" }}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/test" element={<TestPage />} />
-      </Routes>
-    </div>
+    <>
+      <CssBaseline />
+      <Container maxWidth="md">
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/test" element={<TestPage />} />
+        </Routes>
+      </Container>
+    </>
   );
 }
 
