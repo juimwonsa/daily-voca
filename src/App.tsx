@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import WordCard from "./components/WordCard";
 import type { Word } from "./types/word";
 import vocabularyData from "./data/vocabulary.json";
