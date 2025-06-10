@@ -40,8 +40,7 @@ corepack enable
 1. **프로젝트 저장소 복제 (Clone the repository)**
 
    ```bash
-   # GitHub에 올린 후, 본인의 사용자 이름(your-username)을 수정하세요.
-   git clone [https://github.com/your-username/daily-voca.git](https://github.com/your-username/daily-voca.git)
+   git clone [https://github.com/juimwonsa/daily-voca.git](https://github.com/juimwonsa/daily-voca.git)
    ```
 
 2. **프로젝트 폴더로 이동**
