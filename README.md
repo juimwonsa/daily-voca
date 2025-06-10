@@ -40,7 +40,7 @@ corepack enable
 1. **프로젝트 저장소 복제 (Clone the repository)**
 
    ```bash
-   git clone [https://github.com/juimwonsa/daily-voca.git](https://github.com/juimwonsa/daily-voca.git)
+   git clone https://github.com/juimwonsa/daily-voca.git
    ```
 
 2. **프로젝트 폴더로 이동**

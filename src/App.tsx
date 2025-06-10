@@ -15,9 +15,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import WordCard from "./components/WordCard";
 import TestSelectionModal from "./components/TestSelectionModal";
 import TestPage from "./pages/TestPage";
+import WritingTestPage from "./pages/WritingTestPage";
+// 1. 새로 만든 FillBlankTestPage를 import 합니다.
+import FillBlankTestPage from "./pages/FillBlankTestPage";
 import type { Word } from "./types/word";
 import { supabase } from "./lib/supabaseClient";
-import WritingTestPage from "./pages/WritingTestPage";
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
@@ -58,13 +60,25 @@ const HomePage = () => {
       return d;
     });
 
-  const handleStartTest = (testType: "multiple-choice" | "writing") => {
+  // 2. handleStartTest가 새로운 테스트 타입을 처리하도록 수정합니다.
+  const handleStartTest = (
+    testType: "multiple-choice" | "writing" | "fill-in-the-blank"
+  ) => {
     setIsModalOpen(false);
-    console.log(testType);
+
+    // 오늘의 단어가 없을 경우 테스트를 시작하지 않습니다.
+    if (words.length === 0) {
+      alert("테스트할 단어가 없습니다.");
+      return;
+    }
+
     if (testType === "multiple-choice") {
-      navigate("/test", { state: { words: words } });
+      navigate("/test", { state: { words } });
     } else if (testType === "writing") {
-      navigate("/test/writing", { state: { words: words } });
+      navigate("/test/writing", { state: { words } });
+    } else if (testType === "fill-in-the-blank") {
+      // "빈칸 채우기" 테스트 페이지로 이동하는 로직 추가
+      navigate("/test/fill-blank", { state: { words } });
     }
   };
 
@@ -134,6 +148,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/test/writing" element={<WritingTestPage />} />
+          {/* 3. "빈칸 채우기" 테스트를 위한 새로운 Route를 추가합니다. */}
+          <Route path="/test/fill-blank" element={<FillBlankTestPage />} />
         </Routes>
       </Container>
     </>

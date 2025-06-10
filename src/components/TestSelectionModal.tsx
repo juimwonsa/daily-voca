@@ -10,11 +10,16 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CreateIcon from "@mui/icons-material/Create";
+// 1. 빈칸 채우기에 어울리는 새 아이콘을 가져옵니다.
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 interface TestSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onStartTest: (testType: "multiple-choice" | "writing") => void;
+  // 2. onStartTest가 새로운 테스트 타입을 받을 수 있도록 타입을 확장합니다.
+  onStartTest: (
+    testType: "multiple-choice" | "writing" | "fill-in-the-blank"
+  ) => void;
 }
 
 const style = {
@@ -23,7 +28,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "90%",
-  maxWidth: 400,
+  maxWidth: 550, // 3개의 버튼이 잘 보이도록 최대 너비를 약간 늘립니다.
   bgcolor: "background.paper",
   border: "none",
   boxShadow: 24,
@@ -52,53 +57,62 @@ const TestSelectionModal: React.FC<TestSelectionModalProps> = ({
         >
           테스트 유형 선택
         </Typography>
-        <Stack direction="row" spacing={2} justifyContent="space-around">
+        {/* 3. Stack에 새로운 버튼을 추가합니다. */}
+        <Stack direction="row" spacing={2} justifyContent="center">
+          {/* 기존 버튼 1: 단어 뜻 맞히기 */}
           <Button
             onClick={() => onStartTest("multiple-choice")}
             sx={{
-              bgcolor: "white",
-              color: "primary.main",
               width: 120,
               height: 120,
-              borderRadius: 2,
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              border: "2px solid", // --- 테두리 두께 및 스타일 추가
-              borderColor: "primary.main", // --- 테두리 색상 추가
-              "&:hover": {
-                bgcolor: "grey.100",
-              },
+              border: "2px solid",
+              borderColor: "primary.main",
+              "&:hover": { bgcolor: "primary.lighter" },
             }}
           >
-            <AssignmentIcon sx={{ fontSize: 40, mb: 1 }} />
-            <Typography variant="body2" align="center">
+            <AssignmentIcon sx={{ fontSize: 40, mb: 1 }} color="primary" />
+            <Typography variant="body2" align="center" fontWeight="medium">
               단어 뜻 맞히기
             </Typography>
           </Button>
+
+          {/* ✨ 새로 추가된 버튼: 빈칸 채우기 ✨ */}
           <Button
-            onClick={() => onStartTest("writing")} // 타입을 'writing'으로 변경
+            onClick={() => onStartTest("fill-in-the-blank")}
             sx={{
-              bgcolor: "white",
-              color: "secondary.main",
               width: 120,
               height: 120,
-              borderRadius: 2,
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
               border: "2px solid",
-              borderColor: "secondary.main",
-              "&:hover": {
-                bgcolor: "grey.100",
-              },
+              borderColor: "success.main", // 다른 색상으로 구분
+              "&:hover": { bgcolor: "success.lighter" },
             }}
           >
-            <CreateIcon sx={{ fontSize: 40, mb: 1 }} /> {/* 아이콘 변경 */}
-            <Typography variant="body2" align="center">
-              문장 만들기 (작문) {/* 텍스트 변경 */}
+            <EditNoteIcon sx={{ fontSize: 40, mb: 1 }} color="success" />
+            <Typography variant="body2" align="center" fontWeight="medium">
+              빈칸 채우기
+            </Typography>
+          </Button>
+
+          {/* 기존 버튼 2: 문장 만들기 */}
+          <Button
+            onClick={() => onStartTest("writing")}
+            sx={{
+              width: 120,
+              height: 120,
+              display: "flex",
+              flexDirection: "column",
+              border: "2px solid",
+              borderColor: "secondary.main",
+              "&:hover": { bgcolor: "secondary.lighter" },
+            }}
+          >
+            <CreateIcon sx={{ fontSize: 40, mb: 1 }} color="secondary" />
+            <Typography variant="body2" align="center" fontWeight="medium">
+              문장 만들기 (작문)
             </Typography>
           </Button>
         </Stack>

@@ -1,9 +1,6 @@
-// Deno의 표준 HTTP 서버 모듈을 가져옵니다.
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-// [수정된 부분] npm을 통해 안정적인 diff 라이브러리를 가져옵니다.
 import { diffWords } from "npm:diff@5.2.0";
 
-// --- 상수 및 설정 ---
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -11,14 +8,12 @@ const CORS_HEADERS = {
 };
 const MODEL_NAME = "gemini-1.5-flash-latest";
 
-// --- 환경 변수 확인 ---
 const GOOGLE_AI_API_KEY = Deno.env.get("GOOGLE_AI_API_KEY");
 if (!GOOGLE_AI_API_KEY) {
   console.error("FATAL: GOOGLE_AI_API_KEY 환경 변수가 설정되지 않았습니다.");
   Deno.exit(1);
 }
 
-// --- 프롬프트 생성 함수 (변경 없음) ---
 const createIeltsPrompt = (word: string, sentence: string): string => {
   return `
     You are an expert IELTS examiner with over 10 years of experience, specializing in Writing Task 2. Your evaluation is strict, precise, and aligned with the official IELTS band descriptors.
@@ -39,7 +34,6 @@ const createIeltsPrompt = (word: string, sentence: string): string => {
   `;
 };
 
-// --- 메인 서버 로직 (변경 없음) ---
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
@@ -77,7 +71,6 @@ serve(async (req: Request) => {
     const analysisResultText = geminiData.candidates[0].content.parts[0].text;
     const analysisResultJson = JSON.parse(analysisResultText);
 
-    // 이 부분의 diffWords 함수는 이제 npm:diff 패키지에서 온 것입니다.
     const differences = diffWords(
       sentence,
       analysisResultJson.corrected_sentence
