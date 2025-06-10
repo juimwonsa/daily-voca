@@ -73,25 +73,7 @@ corepack enable
 
 ## 📂 데이터 관리
 
-- 모든 영단어 데이터는 `src/data/vocabulary.json` 파일에서 관리됩니다.
-- 새로운 날짜의 단어를 추가하거나 기존 단어를 수정하려면 이 파일을 편집하면 됩니다.
-
-**JSON 데이터 구조:**
-
-```json
-{
-  "YYYY-MM-DD": [
-    {
-      "id": 1,
-      "word": "word_text",
-      "meaning": "korean_meaning",
-      "sentence": "example_sentence"
-    }
-  ]
-}
-```
-
----
+- 모든 영단어 데이터는 supabase에서 관리됩니다.
 
 ## ☁️ 배포
 
