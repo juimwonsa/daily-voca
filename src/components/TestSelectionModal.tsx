@@ -112,7 +112,7 @@ const TestSelectionModal: React.FC<TestSelectionModalProps> = ({
           >
             <CreateIcon sx={{ fontSize: 40, mb: 1 }} color="secondary" />
             <Typography variant="body2" align="center" fontWeight="medium">
-              문장 만들기 (작문)
+              문장 만들기
             </Typography>
           </Button>
         </Stack>

@@ -9,13 +9,15 @@ import {
   Paper,
   Alert,
   AlertTitle,
+  Collapse, // ✨ 1. 힌트 UI에 필요한 컴포넌트 추가
+  Chip,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined"; // 힌트 아이콘
 import type { Word } from "../types/word";
 import { supabase } from "../lib/supabaseClient";
 
-// ✨ 1. 셔플 헬퍼 함수를 여기에 추가합니다.
 const shuffleArray = (array: QuizItem[]): QuizItem[] => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -46,6 +48,9 @@ const FillBlankTestPage = () => {
   const [checkResult, setCheckResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // ✨ 2. 힌트 표시 여부를 관리할 상태 변수 추가
+  const [isHintVisible, setIsHintVisible] = useState(false);
+
   useEffect(() => {
     if (words.length === 0) {
       setLoading(false);
@@ -70,7 +75,6 @@ const FillBlankTestPage = () => {
           throw new Error("AI가 퀴즈를 생성하지 못했습니다.");
         }
 
-        // ✨ 2. 상태를 설정하기 전에 받아온 퀴즈 배열을 섞습니다.
         const shuffledQuiz = shuffleArray(data.quiz);
         setQuizItems(shuffledQuiz);
       } catch (e) {
@@ -96,10 +100,13 @@ const FillBlankTestPage = () => {
   const handleNext = () => {
     setCheckResult(null);
     setUserAnswer("");
+    // 다음 문제로 넘어갈 때 힌트는 숨겨주는 것이 좋습니다.
+    setIsHintVisible(false);
     setCurrentQuestionIndex((prev) => prev + 1);
   };
 
-  // --- UI 렌더링 부분 (변경 없음) ---
+  // --- UI 렌더링 부분 ---
+
   if (loading) {
     return (
       <Box
@@ -116,10 +123,7 @@ const FillBlankTestPage = () => {
     );
   }
 
-  if (error) {
-    return <Alert severity="error">{error}</Alert>;
-  }
-
+  if (error) return <Alert severity="error">{error}</Alert>;
   if (words.length === 0) {
     return (
       <Box sx={{ textAlign: "center", py: 4 }}>
@@ -194,20 +198,37 @@ const FillBlankTestPage = () => {
           />
           {sentenceParts[1]}
         </Typography>
-      </Paper>
 
-      {!checkResult && (
-        <Button
-          variant="contained"
-          size="large"
-          fullWidth
-          onClick={handleCheckAnswer}
-          disabled={!userAnswer}
-          sx={{ my: 2, py: 1.5, fontSize: "1.1rem" }}
-        >
-          정답 확인
-        </Button>
-      )}
+        {/* ✨ 3. 힌트 UI 렌더링 부분 추가 */}
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <Button
+            variant="text"
+            onClick={() => setIsHintVisible(!isHintVisible)}
+            startIcon={<LightbulbOutlinedIcon />}
+          >
+            {isHintVisible ? "힌트 숨기기" : "힌트 보기 (단어 목록)"}
+          </Button>
+        </Box>
+        <Collapse in={isHintVisible}>
+          <Paper
+            elevation={0}
+            sx={{ p: 2, mt: 1, bgcolor: "grey.100", borderRadius: 2 }}
+          >
+            <Typography variant="subtitle2" sx={{ mb: 1, textAlign: "left" }}>
+              이번 퀴즈에 포함된 단어들입니다.
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+              {words.map((wordObj) => (
+                <Chip
+                  key={wordObj.id}
+                  label={wordObj.word}
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+          </Paper>
+        </Collapse>
+      </Paper>
 
       {checkResult && (
         <Paper elevation={2} sx={{ p: 3, mt: 3 }}>
