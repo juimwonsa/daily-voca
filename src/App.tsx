@@ -9,17 +9,20 @@ import {
   Box,
   Stack,
   CircularProgress,
+  IconButton, // 1. IconButton을 import합니다.
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
+import SettingsIcon from "@mui/icons-material/Settings"; // 2. 설정 아이콘을 import합니다.
 
 import WordCard from "./components/WordCard";
 import TestSelectionModal from "./components/TestSelectionModal";
 import TestPage from "./pages/TestPage";
 import WritingTestPage from "./pages/WritingTestPage";
-// 1. 새로 만든 FillBlankTestPage를 import 합니다.
 import FillBlankTestPage from "./pages/FillBlankTestPage";
+import SettingsPage from "./pages/SettingsPage"; // 3. 새로 만든 SettingsPage를 import합니다.
 import type { Word } from "./types/word";
 import { supabase } from "./lib/supabaseClient";
+import { UserProvider } from "./context/UserContext";
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split("T")[0];
@@ -60,30 +63,39 @@ const HomePage = () => {
       return d;
     });
 
-  // 2. handleStartTest가 새로운 테스트 타입을 처리하도록 수정합니다.
   const handleStartTest = (
     testType: "multiple-choice" | "writing" | "fill-in-the-blank"
   ) => {
     setIsModalOpen(false);
-
-    // 오늘의 단어가 없을 경우 테스트를 시작하지 않습니다.
     if (words.length === 0) {
       alert("테스트할 단어가 없습니다.");
       return;
     }
-
     if (testType === "multiple-choice") {
       navigate("/test", { state: { words } });
     } else if (testType === "writing") {
       navigate("/test/writing", { state: { words } });
     } else if (testType === "fill-in-the-blank") {
-      // "빈칸 채우기" 테스트 페이지로 이동하는 로직 추가
       navigate("/test/fill-blank", { state: { words } });
     }
   };
 
   return (
-    <>
+    // 4. 아이콘의 위치 기준점을 잡기 위해 Box에 relative 포지션을 추가합니다.
+    <Box sx={{ position: "relative", pt: 2 }}>
+      {/* 5. 설정 아이콘 버튼을 우상단에 절대 위치로 추가합니다. */}
+      <IconButton
+        aria-label="settings"
+        onClick={() => navigate("/settings")}
+        sx={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+        }}
+      >
+        <SettingsIcon />
+      </IconButton>
+
       <Box sx={{ textAlign: "center", paddingY: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           오늘의 영단어
@@ -135,24 +147,25 @@ const HomePage = () => {
         onClose={() => setIsModalOpen(false)}
         onStartTest={handleStartTest}
       />
-    </>
+    </Box>
   );
 };
 
 function App() {
   return (
-    <>
+    <UserProvider>
       <CssBaseline />
       <Container maxWidth="md">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/test/writing" element={<WritingTestPage />} />
-          {/* 3. "빈칸 채우기" 테스트를 위한 새로운 Route를 추가합니다. */}
           <Route path="/test/fill-blank" element={<FillBlankTestPage />} />
+          {/* 6. 설정 페이지로 이동하는 새로운 Route를 추가합니다. */}
+          <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </Container>
-    </>
+    </UserProvider>
   );
 }
 

@@ -9,12 +9,12 @@ import {
   Paper,
   Alert,
   AlertTitle,
-  Collapse, // ✨ 1. 힌트 UI에 필요한 컴포넌트 추가
+  Collapse,
   Chip,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined"; // 힌트 아이콘
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import type { Word } from "../types/word";
 import { supabase } from "../lib/supabaseClient";
 
